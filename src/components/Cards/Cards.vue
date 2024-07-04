@@ -62,7 +62,10 @@
         </el-col>
 
         <el-col :span="12" class="table-of-cards">
-          
+          <el-table :data="userLogged.cards" style="width: 100%;">
+            <el-table-column label="Nome" prop="name" show-overflow-tooltip/>
+            <el-table-column label="Limite" prop="limit" show-overflow-tooltip/>
+          </el-table>
         </el-col>
       </el-row>
     </el-card>
