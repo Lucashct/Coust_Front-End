@@ -79,6 +79,7 @@ import { computed, reactive, ref } from 'vue';
 import { useStore } from 'vuex';
 import { globalFetch } from '../../fetchGlobal';
 import urls from '../../utils/urls';
+import { UserLogged } from '../../store/loginStore';
 
   const store = useStore();
 
@@ -116,7 +117,7 @@ import urls from '../../utils/urls';
   //COMPUTED
   const showLoading = () => store.dispatch('globalState/showLoading');
   const hideLoading = () => store.dispatch('globalState/hideLoading');
-  const userLogged = computed(() => store.state.loginStore.userLogged);
+  const userLogged = computed<UserLogged>(() => store.state.loginStore.userLogged);
 
   //METHODS
   const updateCardsHandler = (cardsList: Array<any>) => store.dispatch('loginStore/updateUserCards', cardsList);
@@ -130,7 +131,7 @@ import urls from '../../utils/urls';
           name: form.name,
           limit: form.limit,
           dueDate: form.dueDate,
-          user: userLogged
+          user: { ...userLogged.value }
         }
 
         const result = await globalFetch(urls.CREATE_CARD, {

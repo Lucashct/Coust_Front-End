@@ -1,7 +1,7 @@
 import { Module } from 'vuex';
 import { RootState } from '.';
 
-interface UserLogged {
+export interface UserLogged {
   id: number,
   name: string,
   email: string,
