@@ -93,10 +93,10 @@ import urls from '../../../utils/urls';
   }
 
   const login = async(formEl: FormInstance | undefined) => {
-    showLoading();
     if(!formEl) return;
     await formEl.validate(async (valid) => {
       if(valid) {
+        showLoading();
         const payload = {
           email: form.email,
           password: form.password

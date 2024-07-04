@@ -36,7 +36,7 @@
             </el-form-item>
             <el-row :gutter="24">
               <el-col :span="12">
-                <el-form-item label="Limite do cartão">
+                <el-form-item label="Limite do cartão" prop="limit">
                   <div class="el-input__wrapper el-input el-input--default">
                     <money3 v-model="form.limit" class="el-input__inner" v-bind="moneyConfig">
                     </money3>
@@ -45,7 +45,7 @@
               </el-col>
 
               <el-col :span="12">
-                <el-form-item label="Data de Vencimento">
+                <el-form-item label="Data de Vencimento" prop="dueDate">
                   <el-select v-model="form.dueDate">
                     <el-option v-for="day in 31" :label="`Dia ${day}`" :value="day">
                     </el-option>
@@ -106,7 +106,10 @@ import urls from '../../utils/urls';
       { required: true,  message: 'Insira um nome para o cartão.', trigger: 'change'}
     ],
     dueDate: [
-      { required: true, type: 'number', message: 'Obrigatório uma data de vencimento', trigger: 'blur' }
+      { required: true }
+    ],
+    limit: [
+      { required: true }
     ]
   })
 
@@ -119,10 +122,10 @@ import urls from '../../utils/urls';
   const updateCardsHandler = (cardsList: Array<any>) => store.dispatch('loginStore/updateUserCards', cardsList);
 
   const createCard = async (formEl: FormInstance | undefined) => {
-    showLoading();
     if(!formEl) return;
-    await formEl.validate(async valid => {
+    await formEl.validate(async(valid) => {
       if(valid) {
+        showLoading();
         const payload = {
           name: form.name,
           limit: form.limit,
@@ -138,7 +141,7 @@ import urls from '../../utils/urls';
 
         const resultJson = await result.json();
 
-        if(resultJson === 'Success') {
+        if(resultJson.status === 'Success') {
           updateCardsHandler(resultJson.lista);
         }
 
