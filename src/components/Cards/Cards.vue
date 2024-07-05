@@ -146,7 +146,7 @@ import { UserLogged } from '../../store/loginStore';
         const resultJson = await result.json();
 
         if(resultJson.status === 'Success') {
-          updateCardsHandler(resultJson.lista);
+          updateCardsHandler(resultJson.list);
         }
 
         hideLoading();
