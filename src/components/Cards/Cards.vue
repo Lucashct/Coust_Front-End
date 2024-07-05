@@ -56,15 +56,21 @@
 
             <el-row>
               <el-button @click="createCard(ruleFormRef)" circle type="success" :icon="Check"/>
-              <el-button circle type="warning" :icon="Brush"/>
+              <el-button @click="clearForm(ruleFormRef)" circle type="warning" :icon="Brush"/>
             </el-row>
           </el-form>
         </el-col>
 
         <el-col :span="12" class="table-of-cards">
-          <el-table :data="userLogged.cards" style="width: 100%;">
+          <el-table :data="userLogged.cards" style="width: 100%;" empty-text="Sem cartoes cadastrados">
+            <el-table-column width="30">
+              <template #default="scope">
+                <el-button @click="removeCard(scope.row)" :type="'text'" :icon="Delete" style="color: red"/>
+              </template>
+            </el-table-column>
             <el-table-column label="Nome" prop="name" show-overflow-tooltip/>
             <el-table-column label="Limite" prop="limit" show-overflow-tooltip/>
+            <el-table-column label="Venc." prop="dueDate" />
           </el-table>
         </el-col>
       </el-row>
@@ -75,7 +81,8 @@
 <script setup lang="ts">
 import {
   Check,
-  Brush
+  Brush,
+  Delete
 } from '@element-plus/icons-vue'
 import { ComponentSize, FormInstance, FormRules } from 'element-plus';
 import { computed, reactive, ref } from 'vue';
@@ -152,6 +159,15 @@ import { UserLogged } from '../../store/loginStore';
         hideLoading();
       }
     })
+  }
+
+  const clearForm = (formEl: FormInstance | undefined) => {
+    if(!formEl) return;
+    formEl.resetFields();
+  }
+
+  const removeCard = (card: any) => {
+    
   }
 </script>
 

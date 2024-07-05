@@ -9,6 +9,7 @@ const CREATE_USER = BASE_URL + "/user/create"
 
 //END POINTS CARDS
 const CREATE_CARD = BASE_URL + '/cards/create'
+const REMOVE_CARD = BASE_URL + '/cards/remove'
 
 export default {
   RECOVER_SESSION,
@@ -16,5 +17,6 @@ export default {
   LOGIN,
   LOG_OUT,
   CREATE_USER,
-  CREATE_CARD
+  CREATE_CARD,
+  REMOVE_CARD
 }
