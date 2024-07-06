@@ -8,7 +8,7 @@
           <el-tooltip
             content="Adicionar conta"
           >
-            <el-button size="large" circle :icon="Plus" type="success"/>
+            <el-button @click="showAddBillDialog" size="large" circle :icon="Plus" type="success"/>
           </el-tooltip>
           <el-tooltip>
             <el-button size="large" circle></el-button>
@@ -32,19 +32,29 @@
       </el-col>
     </el-row>
   </el-container>
+  <add-bill v-model:visibility="addBillVisibility"/>
 </template>
 
 <script lang="ts" setup>
-  //ICONS IMPORT
+import AddBill from './dialogs/AddBill.vue';
+//ICONS IMPORT
 import {
   Plus
 } from '@element-plus/icons-vue'
-import { computed } from 'vue';
-
-  import { useStore } from 'vuex';
+import { computed, ref } from 'vue';
+import { useStore } from 'vuex';
   const store = useStore();
 
+  //DATA
+  const addBillVisibility = ref(false)
+
+  //COMPUTED
   const userLogged = computed(() => store.state.loginStore.userLogged); 
+
+  //METHOD
+  const showAddBillDialog = () => {
+    addBillVisibility.value = true;
+}
 </script>
 
 <style scoped>
