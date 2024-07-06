@@ -62,14 +62,18 @@
         </el-col>
 
         <el-col :span="12" class="table-of-cards">
-          <el-table :data="userLogged.cards" style="width: 100%;" empty-text="Sem cartoes cadastrados">
+          <el-table :data="userLogged.cards" style="width: 100%;" empty-text="Sem cartões cadastrados">
             <el-table-column width="30">
               <template #default="scope">
-                <el-button @click="removeCard(scope.row)" :type="'text'" :icon="Delete" style="color: red"/>
+                <el-button @click="removeCard(scope.row)" link :icon="Delete" style="color: red"/>
               </template>
             </el-table-column>
             <el-table-column label="Nome" prop="name" show-overflow-tooltip/>
-            <el-table-column label="Limite" prop="limit" show-overflow-tooltip/>
+            <el-table-column label="Limite" prop="limit" show-overflow-tooltip>
+              <template #default="scope">
+                {{`R$ ${(scope.row.limit).toLocaleString('pt-BR')}`  }}
+              </template>
+            </el-table-column>
             <el-table-column label="Venc." prop="dueDate" />
           </el-table>
         </el-col>
@@ -84,7 +88,7 @@ import {
   Brush,
   Delete
 } from '@element-plus/icons-vue'
-import { ComponentSize, FormInstance, FormRules } from 'element-plus';
+import { ComponentSize, ElMessage, ElMessageBox, FormInstance, FormRules } from 'element-plus';
 import { computed, reactive, ref } from 'vue';
 import { useStore } from 'vuex';
 import { globalFetch } from '../../fetchGlobal';
@@ -167,7 +171,41 @@ import { UserLogged } from '../../store/loginStore';
   }
 
   const removeCard = (card: any) => {
-    
+    ElMessageBox.confirm(
+      'Tem certeza que deseja excluír esse cartão ? Todas as contas relacionadas a este cartão serão excluídas!',
+      'Atenção!',
+    ).then(async () => {
+      showLoading();
+
+      const payload = {
+        ...card,
+        user: { ...userLogged.value }
+      }
+
+      const result = await globalFetch(urls.REMOVE_CARD, {
+        method: 'POST',
+        credentials: 'include',
+        body: JSON.stringify(payload)
+      });
+
+      const resultJson = await result.json();
+
+      if(resultJson.status === 'Success') {
+        updateCardsHandler(resultJson.list);
+
+        ElMessage({
+          type: 'success',
+          message: resultJson.message
+        })
+      }
+
+      hideLoading();
+    }).catch(() => {
+      ElMessage({
+        type: 'info',
+        message: 'Remoção cancelada'
+      })
+    })
   }
 </script>
 
