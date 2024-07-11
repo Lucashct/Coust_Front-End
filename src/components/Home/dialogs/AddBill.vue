@@ -50,6 +50,14 @@
           </el-form-item>
         </el-col>
       </el-row>
+
+      <el-row :gutter="24">
+        <el-col :span="12">
+          <el-form-item label="Vencimento" prop="dueDate">
+            <el-date-picker v-model="form.dueDate" type="date" format="DD/MM/YYYY"/>
+          </el-form-item>
+        </el-col>
+      </el-row>
       
       <el-row :gutter="24">
         <el-col :span="12" v-if="form.type === 'INSTALLMENT'">
