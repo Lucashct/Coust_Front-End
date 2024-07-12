@@ -46,7 +46,8 @@ const dialogVisibilities = reactive({
 
 //STORE FUNCTIONS
 const updateUserHandler = (user: object) => store.dispatch('loginStore/updateUserLogged', user);
-
+const showLoading = () => store.dispatch('globalState/showLoading');
+const hideLoading = () => store.dispatch('globalState/hideLoading');
 
 //COMPUTER FUNCTIONS
 const handleOnError = (errorResponse: ImplicitFlowErrorResponse) => {
@@ -56,7 +57,7 @@ const handleOnError = (errorResponse: ImplicitFlowErrorResponse) => {
 
 //METHODS
 const handleOnSuccess = async (response: ImplicitFlowSuccessResponse) => {
-  
+  showLoading();
   const result = await globalFetch(urls.GOOGLE_LOGIN, {
     method: "POST",
     credentials: 'include',
@@ -72,6 +73,7 @@ const handleOnSuccess = async (response: ImplicitFlowSuccessResponse) => {
   if(resultJson.status === 'Success') {
     router.push({ path: '/home' })
   }
+  hideLoading();
 };
 
 const { isReady, login } = useCodeClient({
