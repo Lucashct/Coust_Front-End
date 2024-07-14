@@ -62,7 +62,7 @@
       <el-row :gutter="24">
         <el-col :span="12" v-if="form.type === 'INSTALLMENT'">
           <el-form-item label="Quatidade de Parcelas">
-            <el-input v-model="entriesQt" type="number"/>
+            <el-input-number v-model="entriesQt" type="number" :min="1"/>
           </el-form-item>
         </el-col>
 
@@ -79,6 +79,12 @@
         </el-col>
       </el-row>
     </el-form>
+
+    <template #footer>
+      <div class="dialog-footer">
+        <el-button @click="createBill(ruleFormRef)" type="success" size="small">Gravar</el-button>
+      </div>
+    </template>
   </el-dialog>
 </template>
 
@@ -87,6 +93,8 @@ import { ComponentSize, FormInstance, FormRules } from 'element-plus';
 import { computed, reactive, ref } from 'vue';
 import { useStore } from 'vuex';
 import { UserLogged } from '../../../store/loginStore';
+import { globalFetch } from '../../../fetchGlobal';
+import urls from '../../../utils/urls';
 
 const store = useStore();
 
@@ -129,8 +137,8 @@ const form = reactive<Form>({
   dueDate: ''
 });
 const isCredCard = ref(false);
-const entriesQt = ref(0);
-const cardSelected = ref();
+const entriesQt = ref(1);
+const cardSelected = ref(undefined);
 
 const rules = reactive<FormRules<Form>>({
   title: [
@@ -145,8 +153,57 @@ const rules = reactive<FormRules<Form>>({
 })
 
 const moneyConfig = reactive({
-    prefix: 'R$ '
-  });
+  prefix: 'R$ '
+});
+
+const showLoading = () => store.dispatch('globalState/showLoading');
+const hideLoading = () => store.dispatch('globalState/hideLoading');
+
+const updateEntriesHandler = (entries: any) => store.dispatch('loginStore/updateUserEntries', entries);
+const updateBillsHandler = (bill: any) => store.dispatch('loginStore/updateUserBills', bill);
+
+const createBill = async (formEl: FormInstance | undefined) => {
+  if(!formEl) return;
+  await formEl.validate(async (valid) => {
+    if(valid) {
+      showLoading();
+
+      const payload = {
+        title: form.title,
+        type: form.type,
+        ammount: form.ammount,
+        dueDate: form.dueDate,
+        card: cardSelected.value,
+        entriesQt: entriesQt.value,
+        user: userLogged.value
+      }
+
+      const result = await globalFetch(urls.CREATE_BILL, {
+        method: 'POST',
+        credentials: 'include',
+        body: JSON.stringify(payload)
+      });
+
+      const resultJson = await result.json();
+
+      if(resultJson.status === 'Success') {
+        updateBillsHandler(resultJson.item.bill)
+        updateEntriesHandler(resultJson.item.entries);
+
+        clearForm(ruleFormRef.value);
+
+        closeDialog();
+      }
+
+      hideLoading();
+    }
+  })
+}
+
+const clearForm = (formEl: FormInstance | undefined) => {
+  if(!formEl) return;
+  formEl.resetFields();
+}
 
 const closeDialog = () => {
   emit('update:visibility', false);

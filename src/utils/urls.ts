@@ -11,6 +11,9 @@ const CREATE_USER = BASE_URL + "/user/create"
 const CREATE_CARD = BASE_URL + '/cards/create'
 const REMOVE_CARD = BASE_URL + '/cards/remove'
 
+//END POINTS BILLS
+const CREATE_BILL = BASE_URL + '/bills/create'
+
 export default {
   RECOVER_SESSION,
   GOOGLE_LOGIN,
@@ -18,5 +21,6 @@ export default {
   LOG_OUT,
   CREATE_USER,
   CREATE_CARD,
-  REMOVE_CARD
+  REMOVE_CARD,
+  CREATE_BILL
 }
