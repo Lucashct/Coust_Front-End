@@ -22,7 +22,7 @@
           </template>
           <el-row :gutter="24">
             <el-col :span="14">
-              <el-table :data="billsOfTheMonth">
+              <el-table :data="billsOfTheMonth" empty-text="Sem contas cadastrados">
                 <el-table-column label="Conta">
                   <template #default="scope">
                     {{ `${getBillFromEntrie(scope.row.idBill)}` }}
